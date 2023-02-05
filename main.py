@@ -17,12 +17,13 @@ def print_hi(name):
     block_h, block_w = h // m, w // n
     blocks = [img[i:i + block_h, j:j + block_w] for i in range(0, h, block_h) for j in range(0, w, block_w)]
 
-    random.shuffle(blocks)
-
     for i, block in enumerate(blocks):
-        block = cv2.addWeighted(block, 1 + i * 0.1, np.zeros_like(block), 0, 0)
         result = np.zeros_like(img)
-        result[:block_h, :block_w] = block
+        if i == 0:
+            block = cv2.addWeighted(block, 1, np.zeros_like(block), 0, 0)
+        else:
+            block = cv2.addWeighted(block, 1 + (i - 1) * 0.1, np.zeros_like(block), 0, 0)
+        result[(i // n) * block_h:(i // n + 1) * block_h, (i % n) * block_w:(i % n + 1) * block_w] = block
         cv2.imshow("Result", result)
         cv2.waitKey(1000)
 
